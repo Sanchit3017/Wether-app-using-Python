@@ -1,0 +1,28 @@
+import json
+import pandas as pd
+import requests 
+
+city = input ()
+date = input()
+
+URL = 'https://api.oikolab.com/weather
+OIKO_KEY = '0e137679662e4f59a92b083293f0f8da'
+resp = requests.get(URL , 
+            params ={
+                        'param':['temperature'],
+                        'start' : date ,
+                        'location': city ,
+                        'end': date ,
+                        'api_key': OIKO_KEY , 
+                        'freq' : 'D'}
+)
+
+weather_data = resp.json()['data']
+weather_data = json.loads(weather_data)
+
+df = pd.DataFrame(index=pd.to_datetime(weather_data['index'] , unit='s'),
+data = weather_data['data'] ,
+columns = weather_data['columns'])
+
+temp = int(df.iloc[0,4])
+print(f"Temperature for {city} on {date} = {temp}C")
